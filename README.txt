@@ -1,11 +1,14 @@
-LudoArena Customized Registration Frontend
+LudoArena Connected Frontend
 
-Registration is ON.
-Includes Login, Registration, Tournament cards, bKash/Nagad payment UI,
-copy number buttons, Transaction ID box and responsive design.
+Backend: https://ludo-master-v71z.onrender.com
 
-Payment number: 01301470686
+Features connected:
+- Registration -> POST /api/register
+- Login -> POST /api/login
+- JWT token stored in localStorage
+- Profile -> GET /api/profile
+- Transaction ID -> POST /api/transaction
+- Tournaments -> GET /api/tournaments
+- Health check -> GET /health
 
-Important: Registration and Transaction ID currently work as frontend demo.
-Real account creation, database storage, wallet balance, payment verification,
-and login require a backend/API. GitHub Pages hosts static HTML/CSS/JS.
+Upload index.html to your GitHub Pages repository. Do not put DATABASE_URL or JWT_SECRET in this frontend.

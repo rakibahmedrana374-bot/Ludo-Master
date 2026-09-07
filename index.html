@@ -26,11 +26,11 @@ footer{border-top:1px solid var(--line);padding:35px;text-align:center;color:var
 <header><div class="container nav">
 <div class="brand">Ludo<span>Arena</span></div>
 <nav><a href="#home">Home</a><a href="#tournaments">Tournaments</a><a href="#payment">Payment</a><a href="#how">How to Play</a></nav>
-<div><button class="btn secondary" onclick="openM('login')">Login</button> <button class="btn primary" onclick="openM('register')">Register</button></div>
+<div id="authButtons"><button class="btn secondary" onclick="openM('login')">Login</button> <button class="btn primary" onclick="openM('register')">Register</button></div>
 </div></header>
 
 <section class="hero" id="home"><div class="container hero-grid">
-<div><span class="tag">🎮 Online Ludo Tournament</span><h1>Play Ludo.<br><span>Win Rewards.</span></h1><p>Register, join tournaments and manage your wallet. This frontend is prepared for your future backend/API.</p>
+<div><span class="tag">🎮 Online Ludo Tournament</span><h1>Play Ludo.<br><span>Win Rewards.</span></h1><p>Register, join tournaments and manage your wallet. Frontend এখন তোমার Render backend-এর সাথে connected।</p>
 <div class="actions"><button class="btn primary" onclick="openM('register')">Create Account</button><a class="btn secondary" href="#tournaments">View Tournaments</a></div></div>
 <div class="phone"><div class="screen"><div class="balance"><small>Wallet Balance</small><strong>৳ 0.00</strong></div><div class="card" style="margin-top:14px"><b>Next Tournament</b><p>Entry ৳10 • Prize ৳500</p><button class="btn primary" style="width:100%" onclick="openM('login')">Join Now</button></div></div></div>
 </div></section>
@@ -52,18 +52,94 @@ footer{border-top:1px solid var(--line);padding:35px;text-align:center;color:var
 <div class="card"><h3>1. Register</h3><p>Account তৈরি করুন।</p></div><div class="card"><h3>2. Deposit</h3><p>Payment করুন এবং TxID দিন।</p></div><div class="card"><h3>3. Join</h3><p>Tournament বেছে Join করুন।</p></div>
 </div></div></section>
 <section><div class="container"><div class="title"><h2>Features</h2></div><div class="grid"><div class="card"><h3>🏆 Tournaments</h3><p>Multiple entry fee and prize options.</p></div><div class="card"><h3>💳 Payments</h3><p>bKash/Nagad payment UI with copy buttons.</p></div><div class="card"><h3>🔒 Backend Ready</h3><p>Registration and transaction UI is ready for API integration.</p></div></div></div></section>
+
+<section><div class="container"><div class="card" style="text-align:center"><h3>Backend Status</h3><p id="apiStatus">Checking Render API...</p></div></div></section>
 <footer>© 2026 LudoArena. All rights reserved.</footer>
 
-<div class="modal" id="login"><div class="modal-box"><button class="close" onclick="closeM('login')">×</button><h2>Login</h2><div class="form"><input placeholder="Phone / Email"><input type="password" placeholder="Password"><button class="btn primary" onclick="demoLogin()">Login</button><p>Account নেই? <span class="switch" onclick="closeM('login');openM('register')">Register</span></p></div></div></div>
-<div class="modal" id="register"><div class="modal-box"><button class="close" onclick="closeM('register')">×</button><h2>Create Account</h2><div class="form"><input id="name" placeholder="Full Name"><input id="phone" placeholder="Mobile Number"><input id="pass" type="password" placeholder="Password"><input id="confirm" type="password" placeholder="Confirm Password"><button class="btn primary" onclick="registerDemo()">Register</button><p>Already have an account? <span class="switch" onclick="closeM('register');openM('login')">Login</span></p></div></div></div>
+<div class="modal" id="login"><div class="modal-box"><button class="close" onclick="closeM('login')">×</button><h2>Login</h2><div class="form"><input id="loginId" placeholder="Mobile Number / Email"><input id="loginPass" type="password" placeholder="Password"><button class="btn primary" onclick="loginUser()">Login</button><p>Account নেই? <span class="switch" onclick="closeM('login');openM('register')">Register</span></p></div></div></div>
+<div class="modal" id="register"><div class="modal-box"><button class="close" onclick="closeM('register')">×</button><h2>Create Account</h2><div class="form"><input id="name" placeholder="Full Name"><input id="phone" placeholder="Mobile Number"><input id="pass" type="password" placeholder="Password"><input id="confirm" type="password" placeholder="Confirm Password"><button class="btn primary" onclick="registerUser()">Register</button><p>Already have an account? <span class="switch" onclick="closeM('register');openM('login')">Login</span></p></div></div></div>
 <div class="toast" id="toast"></div>
 <script>
-function openM(id){document.getElementById(id).classList.add('show')}function closeM(id){document.getElementById(id).classList.remove('show')}
-function show(msg){let t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(window.tm);window.tm=setTimeout(()=>t.style.display='none',2500)}
+const API_BASE='https://ludo-master-v71z.onrender.com';
+const TOKEN_KEY='ludoarena_token';
+
+function openM(id){document.getElementById(id).classList.add('show')}
+function closeM(id){document.getElementById(id).classList.remove('show')}
+function show(msg){let t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(window.tm);window.tm=setTimeout(()=>t.style.display='none',3000)}
 function copyNo(id){let v=document.getElementById(id).value;if(navigator.clipboard)navigator.clipboard.writeText(v).then(()=>show('Number copied: '+v));else{let x=document.createElement('textarea');x.value=v;document.body.appendChild(x);x.select();document.execCommand('copy');x.remove();show('Number copied: '+v)}}
-function submitTx(){let v=document.getElementById('txid').value.trim();show(v?'Transaction ID submitted (demo)':'Transaction ID দিন')}
-function registerDemo(){let n=document.getElementById('name').value.trim(),p=document.getElementById('phone').value.trim(),a=document.getElementById('pass').value,c=document.getElementById('confirm').value;if(!n||!p||!a)return show('সব তথ্য পূরণ করুন');if(a!==c)return show('Password মিলছে না');closeM('register');show('Registration successful (demo)')}
-function demoLogin(){closeM('login');show('Login demo — backend পরে connect করতে হবে')}
+function token(){return localStorage.getItem(TOKEN_KEY)}
+function authHeaders(){const t=token();return t?{'Content-Type':'application/json','Authorization':'Bearer '+t}:{'Content-Type':'application/json'}}
+async function api(path,options={}){
+  const res=await fetch(API_BASE+path,{...options,headers:{...authHeaders(),...(options.headers||{})}});
+  let data={}; try{data=await res.json()}catch(e){data={message:'Server response পাওয়া যায়নি'}}
+  if(!res.ok) throw new Error(data.message||data.error||'Request failed');
+  return data;
+}
+
+async function registerUser(){
+  const n=document.getElementById('name').value.trim(),p=document.getElementById('phone').value.trim(),a=document.getElementById('pass').value,c=document.getElementById('confirm').value;
+  if(!n||!p||!a)return show('সব তথ্য পূরণ করুন');
+  if(a!==c)return show('Password মিলছে না');
+  if(a.length<6)return show('Password কমপক্ষে 6 অক্ষরের দিন');
+  try{
+    const data=await api('/api/register',{method:'POST',body:JSON.stringify({name:n,phone:p,password:a})});
+    if(data.token)localStorage.setItem(TOKEN_KEY,data.token);
+    closeM('register'); show(data.message||'Registration successful'); updateAuthUI(); loadProfile();
+  }catch(e){show(e.message)}
+}
+
+async function loginUser(){
+  const identifier=document.getElementById('loginId').value.trim(),password=document.getElementById('loginPass').value;
+  if(!identifier||!password)return show('Login তথ্য পূরণ করুন');
+  try{
+    const data=await api('/api/login',{method:'POST',body:JSON.stringify({identifier,password,phone:identifier,email:identifier})});
+    if(data.token)localStorage.setItem(TOKEN_KEY,data.token);
+    closeM('login'); show(data.message||'Login successful'); updateAuthUI(); loadProfile();
+  }catch(e){show(e.message)}
+}
+
+async function loadProfile(){
+  if(!token())return;
+  try{
+    const data=await api('/api/profile');
+    const user=data.user||data;
+    const name=user.name||user.full_name||'User';
+    const balance=Number(user.balance||0).toFixed(2);
+    const b=document.querySelector('.balance strong'); if(b)b.textContent='৳ '+balance;
+    const tag=document.querySelector('.hero .tag'); if(tag)tag.textContent='🎮 Welcome, '+name;
+  }catch(e){
+    localStorage.removeItem(TOKEN_KEY); updateAuthUI();
+  }
+}
+
+function logoutUser(){localStorage.removeItem(TOKEN_KEY);show('Logout successful');updateAuthUI()}
+function updateAuthUI(){
+  const box=document.getElementById('authButtons'); if(!box)return;
+  if(token()) box.innerHTML='<button class="btn secondary" onclick="loadProfile()">Profile</button> <button class="btn primary" onclick="logoutUser()">Logout</button>';
+  else box.innerHTML='<button class="btn secondary" onclick="openM(\'login\')">Login</button> <button class="btn primary" onclick="openM(\'register\')">Register</button>';
+}
+
+async function submitTx(){
+  const v=document.getElementById('txid').value.trim();
+  if(!v)return show('Transaction ID দিন');
+  if(!token()){show('আগে Login করুন');openM('login');return;}
+  try{const data=await api('/api/transaction',{method:'POST',body:JSON.stringify({txid:v})});show(data.message||'Transaction ID submitted');document.getElementById('txid').value='';}
+  catch(e){show(e.message)}
+}
+
+async function loadTournaments(){
+  const grid=document.querySelector('#tournaments .grid'); if(!grid)return;
+  try{
+    const data=await api('/api/tournaments');
+    const list=Array.isArray(data)?data:(data.tournaments||[]);
+    if(!list.length)return;
+    grid.innerHTML=list.map(t=>`<div class="card"><div class="tournament"><div><h3>${escapeHtml(t.name||'Tournament')}</h3><p>Entry Fee: ৳${Number(t.entry_fee??t.entryFee??0)}</p></div><div class="prize">৳${Number(t.prize??t.prize_pool??0).toLocaleString()}</div></div><button class="btn primary" style="width:100%" onclick="joinTournament()">Join Tournament</button></div>`).join('');
+  }catch(e){console.log('Tournament load:',e.message)}
+}
+function joinTournament(){if(!token()){show('Tournament join করতে Login করুন');openM('login');return}show('Tournament join API এখনো backend-এ যোগ করা হয়নি')}
+function escapeHtml(v){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 window.onclick=e=>{if(e.target.classList.contains('modal'))e.target.classList.remove('show')}
+updateAuthUI();loadProfile();loadTournaments();
 </script>
+<script>fetch(API_BASE+'/health').then(r=>r.json()).then(d=>{const e=document.getElementById('apiStatus');if(e)e.textContent=d.status==='healthy'?'🟢 Backend Connected':'🟠 Backend Response Received'}).catch(()=>{const e=document.getElementById('apiStatus');if(e)e.textContent='🔴 Backend Offline'});</script>
 </body></html>
