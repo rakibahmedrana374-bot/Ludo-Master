@@ -1,14 +1,17 @@
-LudoArena Connected Frontend
+LudoArena New Dashboard Frontend
 
-Backend: https://ludo-master-v71z.onrender.com
+Connected API: https://ludo-master-v71z.onrender.com
 
-Features connected:
-- Registration -> POST /api/register
-- Login -> POST /api/login
-- JWT token stored in localStorage
-- Profile -> GET /api/profile
-- Transaction ID -> POST /api/transaction
-- Tournaments -> GET /api/tournaments
-- Health check -> GET /health
+Real features using the current backend:
+- Register: POST /api/register
+- Login: POST /api/login (phone + password)
+- Dashboard/Profile: GET /api/profile with JWT
+- Deposit request: POST /api/transaction (trx_id, amount, method)
+- Tournament list: GET /api/tournaments
+- API health: GET /health
 
-Upload index.html to your GitHub Pages repository. Do not put DATABASE_URL or JWT_SECRET in this frontend.
+Registration and login use the existing PostgreSQL backend. The JWT is stored in browser localStorage so the user stays logged in after refresh.
+
+Important: the current backend stores deposit requests as pending; it does not automatically credit wallet balance. Tournament Join is also UI-only until a join endpoint is added to the backend.
+
+For GitHub Pages, upload index.html to the repository root and enable Pages from the main branch/root folder.
