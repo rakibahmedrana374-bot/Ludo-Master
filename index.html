@@ -31,3 +31,11 @@ let adminUsers=[];async function loadAdmin(){try{const d=await api('/api/admin/u
 function logout(show=true){localStorage.removeItem(KEY);$('dashboard').classList.add('hidden');$('landing').classList.remove('hidden');$('guestActions').classList.remove('hidden');$('userActions').classList.add('hidden');if(show)toast('Logout হয়েছে')}
 async function boot(){renderMatches();try{const r=await fetch(API+'/health');$('apiStatus').textContent=r.ok?'🟢 Backend Connected':'🔴 Backend Offline'}catch{$('apiStatus').textContent='🔴 Backend Offline'}if(tok()){$('landing').classList.add('hidden');$('dashboard').classList.remove('hidden');$('guestActions').classList.add('hidden');$('userActions').classList.remove('hidden');await loadProfile();showView('home')}}boot();
 </script></body></html>
+<div class="matches-content">
+    <div class="empty-box"></div>
+</div>.empty-box {
+    width: 100%;
+    height: 150px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
