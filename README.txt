@@ -1,21 +1,14 @@
-LudoArena Auth-Only Frontend
+LudoArena Matches Custom
+========================
+Features:
+- 1vs1 match card
+- Entry Fee ৳60
+- Winning Prize ৳110
+- Green Join button
+- After 2 players join, Match Code input appears
+- Copy button copies the code
+- CONFIG object in index.html lets you customize match name, entry fee and prize.
 
-This frontend is connected to:
-https://ludo-master-v71z.onrender.com
-
-Before login/register, the site shows ONLY Login and Register.
-After successful login, the dashboard shows ONLY:
-- Home
-- Wallet
-- Profile
-
-Registration fields:
-- Name
-- Mobile number
-- Exactly 6-digit numeric password
-- Confirm password
-
-Login uses mobile number + exactly 6-digit numeric password.
-JWT token is stored in localStorage so refresh keeps the session.
-
-Upload index.html to GitHub Pages. The existing Render backend must remain live.
+IMPORTANT:
+This package is a frontend demo/customizer. It stores players/code in the browser localStorage, so it is NOT a real two-user server match.
+For two different phones/users to share the same match and code, the backend needs match endpoints + database storage. Render supports web services for APIs and databases can be used for persistent state.
