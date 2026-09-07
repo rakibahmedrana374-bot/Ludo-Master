@@ -1,17 +1,21 @@
-LudoArena New Dashboard Frontend
+LudoArena Auth-Only Frontend
 
-Connected API: https://ludo-master-v71z.onrender.com
+This frontend is connected to:
+https://ludo-master-v71z.onrender.com
 
-Real features using the current backend:
-- Register: POST /api/register
-- Login: POST /api/login (phone + password)
-- Dashboard/Profile: GET /api/profile with JWT
-- Deposit request: POST /api/transaction (trx_id, amount, method)
-- Tournament list: GET /api/tournaments
-- API health: GET /health
+Before login/register, the site shows ONLY Login and Register.
+After successful login, the dashboard shows ONLY:
+- Home
+- Wallet
+- Profile
 
-Registration and login use the existing PostgreSQL backend. The JWT is stored in browser localStorage so the user stays logged in after refresh.
+Registration fields:
+- Name
+- Mobile number
+- Exactly 6-digit numeric password
+- Confirm password
 
-Important: the current backend stores deposit requests as pending; it does not automatically credit wallet balance. Tournament Join is also UI-only until a join endpoint is added to the backend.
+Login uses mobile number + exactly 6-digit numeric password.
+JWT token is stored in localStorage so refresh keeps the session.
 
-For GitHub Pages, upload index.html to the repository root and enable Pages from the main branch/root folder.
+Upload index.html to GitHub Pages. The existing Render backend must remain live.
