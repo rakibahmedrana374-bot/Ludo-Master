@@ -1,26 +1,19 @@
-# LudoArena Backend
+# LudoArena Backend - Account ID + Admin Block/Unblock
 
-Node.js + Express + PostgreSQL backend starter for the LudoArena frontend.
+Keeps the existing API and adds:
+- 6-digit Account ID
+- `blocked` user status
+- blocked users cannot login
+- admin user list
+- admin block/unblock endpoint
 
-## Local
-1. Install Node.js.
-2. Run `npm install`
-3. Copy `.env.example` to `.env`
-4. Set DATABASE_URL and JWT_SECRET.
-5. Run `npm start`
+## Render Environment Variable
+Add:
+`ADMIN_PHONES=YOUR_ADMIN_MOBILE`
+For multiple admins: `ADMIN_PHONES=017xxxxxxxx,018xxxxxxxx`
 
-## Main APIs
-POST /api/register
-POST /api/login
-GET /api/profile (Bearer token)
-POST /api/transaction (Bearer token)
-GET /api/tournaments
+Keep your existing `DATABASE_URL` and `JWT_SECRET`. Do not commit secret values.
 
-## Railway
-Push this folder to GitHub and deploy the repository on Railway.
-Add a PostgreSQL service and set DATABASE_URL to the PostgreSQL connection variable.
-Set JWT_SECRET in Variables.
-Generate a public domain from the service Networking settings.
-
-This is a starter backend. Admin approval, withdrawal processing, payment verification,
-rate limiting, email/SMS OTP, and production security should be added before real-money use.
+Admin endpoints:
+- GET `/api/admin/users`
+- POST `/api/admin/users/:accountId/block` with `{ "blocked": true }` or `{ "blocked": false }`

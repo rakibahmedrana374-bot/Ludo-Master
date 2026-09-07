@@ -1,14 +1,7 @@
-LudoArena Full Dashboard + Matches
+LudoArena - Full Dashboard + Matches + Account ID + Admin Block/Unblock
 
-আগের Login/Register, Home, Wallet, Profile সব রাখা হয়েছে।
-নতুন Matches option যোগ করা হয়েছে।
+This version keeps the existing Login/Register, Home, Wallet, Profile, Matches, 1vs1, Entry Fee 60, Winning 110, Match Code and Copy features, and adds an Admin Account Control panel.
 
-MATCH_CONFIG থেকে পরিবর্তন করুন:
-- name
-- entryFee
-- winning
-- boxes
+Admin panel: users can be searched by Account ID, mobile or name and blocked/unblocked.
 
-1vs1 Match-এ Join চাপলে 2 player পর্যন্ত নেয়। 2 জন হলে Match Code box ও Copy button আসে।
-এই version-এর Matches frontend customization; সত্যিকারের multi-device synchronized match-এর জন্য backend match API পরে যোগ করতে হবে.
-API: https://ludo-master-v71z.onrender.com
+IMPORTANT: Real Block/Unblock requires the updated backend. Set ADMIN_PHONES on Render to the admin mobile number(s), comma-separated. Do not put the admin phone list in public frontend code.
