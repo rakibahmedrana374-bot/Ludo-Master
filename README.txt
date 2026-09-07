@@ -1,14 +1,14 @@
-LudoArena Matches Custom
-========================
-Features:
-- 1vs1 match card
-- Entry Fee ৳60
-- Winning Prize ৳110
-- Green Join button
-- After 2 players join, Match Code input appears
-- Copy button copies the code
-- CONFIG object in index.html lets you customize match name, entry fee and prize.
+LudoArena Full Dashboard + Matches
 
-IMPORTANT:
-This package is a frontend demo/customizer. It stores players/code in the browser localStorage, so it is NOT a real two-user server match.
-For two different phones/users to share the same match and code, the backend needs match endpoints + database storage. Render supports web services for APIs and databases can be used for persistent state.
+আগের Login/Register, Home, Wallet, Profile সব রাখা হয়েছে।
+নতুন Matches option যোগ করা হয়েছে।
+
+MATCH_CONFIG থেকে পরিবর্তন করুন:
+- name
+- entryFee
+- winning
+- boxes
+
+1vs1 Match-এ Join চাপলে 2 player পর্যন্ত নেয়। 2 জন হলে Match Code box ও Copy button আসে।
+এই version-এর Matches frontend customization; সত্যিকারের multi-device synchronized match-এর জন্য backend match API পরে যোগ করতে হবে.
+API: https://ludo-master-v71z.onrender.com
